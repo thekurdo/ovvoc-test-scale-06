@@ -4,26 +4,26 @@ const router = Router();
 const store = getStore('warehouses');
 
 // :id? optional param — breaks in Express 5
-router.get('/:id?', (req, res) => {
+router.get('{/:id}', (req, res) => {
   if (req.params.id) {
     const item = store.getById(req.params.id);
-    return item ? res.json(item) : res.send(404);
+    return item ? res.json(item) : res.sendStatus(404);
   }
   res.json(store.getAll());
 });
 
 router.post('/', (req, res) => {
-  if (!req.body || Object.keys(req.body).length === 0) return res.json(400, { error: 'body required' });
+  if (!req.body || Object.keys(req.body).length === 0) return res.status(400).json({ error: 'body required' });
   res.status(201).json(store.create(req.body));
 });
 
 router.put('/:id', (req, res) => {
   const item = store.update(req.params.id, req.body);
-  item ? res.json(item) : res.send(404);
+  item ? res.json(item) : res.sendStatus(404);
 });
 
 router.delete('/:id', (req, res) => {
-  store.remove(req.params.id) ? res.json({ ok: true }) : res.send(404);
+  store.remove(req.params.id) ? res.json({ ok: true }) : res.sendStatus(404);
 });
 
 module.exports = router;
